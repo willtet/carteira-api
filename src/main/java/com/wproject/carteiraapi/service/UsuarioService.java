@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.wproject.carteiraapi.dto.UsuarioDto;
@@ -23,9 +25,9 @@ public class UsuarioService {
 	private UsuarioRepository repository;
 	private ModelMapper modelMapper = new ModelMapper();
 	
-	public List<UsuarioDto> ler() {
-		List<Usuario> usuarios = repository.findAll();
-		return usuarios.stream().map(usuario -> modelMapper.map(usuario, UsuarioDto.class)).collect(Collectors.toList());
+	public Page<UsuarioDto> ler(Pageable page) {
+		Page<Usuario> usuarios = repository.findAll(page);
+		return usuarios.map(usuario -> modelMapper.map(usuario, UsuarioDto.class));
 
 	}
 

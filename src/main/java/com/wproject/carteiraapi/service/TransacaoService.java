@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +23,10 @@ public class TransacaoService {
 	private TransacaoRepository repository;
 	private ModelMapper modelMapper = new ModelMapper();
 	
-	public List<TransacaoDto> listar() {
-		List<Transacao> transacoes = repository.findAll();
-		return transacoes
-				.stream()
-				.map(transacao -> modelMapper.map(transacao, TransacaoDto.class))
-				.collect(Collectors.toList()); 
+	public Page<TransacaoDto> listar(Pageable paginacao) {
+		Page<Transacao> transacoes = repository.findAll(paginacao);
+		
+		return transacoes.map(transacao -> modelMapper.map(transacao, TransacaoDto.class)); 
 	}
 	
 	@Transactional
