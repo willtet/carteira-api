@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -31,11 +32,13 @@ public class UsuarioService {
 
 	}
 
-	public void cadastrar(UsuarioFormDto dto) {
+	@Transactional
+	public UsuarioDto cadastrar(UsuarioFormDto dto) {
 		Usuario user = modelMapper.map(dto, Usuario.class);
 		String senha = String.valueOf(new Random().nextInt(999999));
 		user.setSenha(senha);
 		repository.save(user);
+		return modelMapper.map(user, UsuarioDto.class);
 		
 	}
 }
