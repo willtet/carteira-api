@@ -3,6 +3,7 @@ package com.wproject.carteiraapi.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -21,10 +22,9 @@ import lombok.Setter;
 public class TransacaoFormDto {
 	
 	
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Size(min = 5, max = 6)
-	@Pattern(regexp = "[a-zA-Z]{4}[0-9][0-9]?")
+	@Pattern(regexp = "[a-zA-Z]{4}[0-9][0-9]?", message = "{ticker.padrao.invalido}")
 	private String ticker;
 	
 	@NotNull
