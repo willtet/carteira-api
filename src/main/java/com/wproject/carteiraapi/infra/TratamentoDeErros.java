@@ -30,13 +30,13 @@ public class TratamentoDeErros {
 				.collect(Collectors.toList());
 	}
 	
-	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ExceptionHandler(Exception.class)
 	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
 	public Erro500Dto tratarErro500(Exception ex, HttpServletRequest req) {
 		return new Erro500Dto(
 				LocalDateTime.now(),
 				ex.getClass().toString(), 
-				ex.getMessage(), 
+				ex.getMessage(),
 				req.getRequestURI());
 	}
 }
