@@ -13,12 +13,13 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.wproject.carteiraapi.model.TipoTransacao;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-
+@AllArgsConstructor
 public class TransacaoFormDto {
 	
 	

@@ -3,8 +3,10 @@ package com.wproject.carteiraapi.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+import org.apache.tomcat.jni.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,12 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wproject.carteiraapi.dto.TransacaoDto;
 import com.wproject.carteiraapi.dto.TransacaoFormDto;
 import com.wproject.carteiraapi.model.Transacao;
+import com.wproject.carteiraapi.model.Usuario;
 import com.wproject.carteiraapi.repository.TransacaoRepository;
+import com.wproject.carteiraapi.repository.UsuarioRepository;
 
 @Service
 public class TransacaoService {
 	@Autowired
 	private TransacaoRepository repository;
+	
+	@Autowired
+	private UsuarioRepository userRepository;
+	
 	private ModelMapper modelMapper = new ModelMapper();
 	
 	public Page<TransacaoDto> listar(Pageable paginacao) {
@@ -31,9 +39,18 @@ public class TransacaoService {
 	
 	@Transactional
 	public TransacaoDto cadastrar(TransacaoFormDto dto) {
-		Transacao transacao = modelMapper.map(dto, Transacao.class);
-		transacao.setId(null);
-		repository.save(transacao);
-		return modelMapper.map(transacao, TransacaoDto.class);
+		Long idUsuario = dto.getUsuarioId();
+		try {
+			Usuario user = userRepository.getById(idUsuario);
+			
+			Transacao transacao = modelMapper.map(dto, Transacao.class);
+			transacao.setId(null);
+			transacao.setUsuario(user);
+			repository.save(transacao);
+			return modelMapper.map(transacao, TransacaoDto.class);			
+		} catch (EntityNotFoundException e) {
+			throw new IllegalArgumentException("Usuario inexistente");
+		}
+		
 	}
 }
