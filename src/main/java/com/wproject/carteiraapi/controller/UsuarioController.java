@@ -25,8 +25,12 @@ import com.wproject.carteiraapi.dto.UsuarioFormDto;
 import com.wproject.carteiraapi.model.Usuario;
 import com.wproject.carteiraapi.service.UsuarioService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/usuario")
+@Api(tags = "Usuarios")
 public class UsuarioController {
 	
 	
@@ -34,11 +38,13 @@ public class UsuarioController {
 	private UsuarioService service;
 	
 	@GetMapping
+	@ApiOperation("Listar usuarios")
 	public Page<UsuarioDto> ler(@PageableDefault(size=20) Pageable paginacao) {
 		return service.ler(paginacao);
 	}
 
 	@PostMapping
+	@ApiOperation("Cadastrar novos usuarios")
 	public ResponseEntity<UsuarioDto> cadastrar(
 			@RequestBody @Valid UsuarioFormDto dto,
 			UriComponentsBuilder builder) {
