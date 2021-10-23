@@ -35,21 +35,27 @@ class TransacaoServiceTest {
 
 	@Test
 	void deveriaCadastrarTransacao() {
-		TransacaoFormDto form = new TransacaoFormDto(
-				"BBSS3",
-				new BigDecimal("1000.00"),
-				30,
-				LocalDate.now(),
-				TipoTransacao.VENDA,
-				1l);
+		TransacaoFormDto form = criarTransacaoForm();
 		
 		TransacaoDto dto = service.cadastrar(form);
+		Mockito.verify(repository).save(Mockito.any());
+		
 		
 		assertEquals(form.getTicker(),dto.getTicker());
 	}
 	
 	@Test
 	void naoDeveriaCadastrarTransacaoSemTerUsuarioCadastrado() {
+		TransacaoFormDto form = criarTransacaoForm();
+		Mockito
+		.when(userRepository.getById(form.getUsuarioId()))
+		.thenThrow(EntityNotFoundException.class);
+				
+		assertThrows(IllegalArgumentException.class, () -> service.cadastrar(form));
+		
+	}
+
+	private TransacaoFormDto criarTransacaoForm() {
 		TransacaoFormDto form = new TransacaoFormDto(
 				"BBSS3",
 				new BigDecimal("1000.00"),
@@ -57,12 +63,7 @@ class TransacaoServiceTest {
 				LocalDate.now(),
 				TipoTransacao.VENDA,
 				1l);
-		Mockito
-		.when(userRepository.getById(form.getUsuarioId()))
-		.thenThrow(EntityNotFoundException.class);
-				
-		assertThrows(IllegalArgumentException.class, () -> service.cadastrar(form));
-		
+		return form;
 	}
 
 }
