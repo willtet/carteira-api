@@ -20,28 +20,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class TransacaoFormDto {
-	
-	
-	@NotBlank
-	@Size(min = 5, max = 6)
-	@Pattern(regexp = "[a-zA-Z]{4}[0-9][0-9]?", message = "{ticker.padrao.invalido}")
-	private String ticker;
-	
+@AllArgsConstructor
+public class AtualizarTransacaoFormDto extends TransacaoFormDto {
+
 	@NotNull
-	private BigDecimal preco;
+	private Long id;
 	
-	@NotNull
-	private int quantidade;
-	
-	@PastOrPresent
-	private LocalDate data;
-	
-	@NotNull
-	private TipoTransacao tipo;
-	
-	@JsonAlias("usuario_id")
-	private Long usuarioId;
 }
