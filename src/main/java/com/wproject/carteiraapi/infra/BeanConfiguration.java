@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.wproject.carteiraapi.infra.security.AutenticacaoService;
+
 @Configuration
 public class BeanConfiguration {
 	@Bean
@@ -16,4 +18,6 @@ public class BeanConfiguration {
 	public ModelMapper mapper() {
 		return new ModelMapper();
 	}
+
+	
 }
