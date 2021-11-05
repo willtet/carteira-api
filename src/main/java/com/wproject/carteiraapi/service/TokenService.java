@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.wproject.carteiraapi.model.Usuario;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -19,9 +20,36 @@ public class TokenService {
 		Usuario user = (Usuario) authentication.getPrincipal();
 		return Jwts
 				.builder()
-				.setId(user.getId().toString())
-				.signWith(SignatureAlgorithm.HS256, "sdmskdmskdmskmd")
+				.setSubject(user.getId().toString())
+				.signWith(SignatureAlgorithm.HS256, secret)
 				.compact();
+	}
+	
+	public boolean isValid(String token) {
+		try {
+			Jwts
+			.parser()
+			.setSigningKey(secret)
+			.parseClaimsJws(token);
+			return true;
+		} catch(Exception e) {
+			System.out.println(e);
+			return false;
+		}
+		
+	}
+
+	public Long extrairId(String token) {
+		Claims claims = Jwts
+							.parser()
+							.setSigningKey(secret)
+							.parseClaimsJws(token)
+							.getBody();
+		return Long.parseLong(claims.getSubject());
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 
 }
