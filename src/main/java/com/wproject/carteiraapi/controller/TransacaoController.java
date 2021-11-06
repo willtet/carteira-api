@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ import com.wproject.carteiraapi.dto.TransacaoDetalhadaDto;
 import com.wproject.carteiraapi.dto.TransacaoDto;
 import com.wproject.carteiraapi.dto.TransacaoFormDto;
 import com.wproject.carteiraapi.model.Transacao;
+import com.wproject.carteiraapi.model.Usuario;
 import com.wproject.carteiraapi.repository.TransacaoRepository;
 import com.wproject.carteiraapi.service.TransacaoService;
 
@@ -43,8 +45,8 @@ public class TransacaoController {
 	private TransacaoService service;
 	
 	@GetMapping
-	private Page<TransacaoDto> listar(@PageableDefault(size=10) Pageable paginacao) {
-		return service.listar(paginacao);
+	private Page<TransacaoDto> listar(@PageableDefault(size=10) Pageable paginacao, @AuthenticationPrincipal Usuario user) {
+		return service.listar(paginacao, user);
 	}
 	
 	@GetMapping("/{id}")

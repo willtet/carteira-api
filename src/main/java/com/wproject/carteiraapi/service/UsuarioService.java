@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import com.wproject.carteiraapi.dto.UsuarioDto;
 import com.wproject.carteiraapi.dto.UsuarioFormDto;
+import com.wproject.carteiraapi.model.Perfil;
 import com.wproject.carteiraapi.model.Usuario;
+import com.wproject.carteiraapi.repository.PerfilRepository;
 import com.wproject.carteiraapi.repository.UsuarioRepository;
 
 @Service
@@ -25,6 +27,9 @@ public class UsuarioService {
 
 	@Autowired
 	private UsuarioRepository repository;
+	
+	@Autowired
+	private PerfilRepository perfilRepository;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -41,6 +46,9 @@ public class UsuarioService {
 	@Transactional
 	public UsuarioDto cadastrar(UsuarioFormDto dto) {
 		Usuario user = modelMapper.map(dto, Usuario.class);
+		Perfil perfil = perfilRepository.getById(dto.getPerfilId());
+		user.adicionarPerfil(perfil);
+		
 		String senha = String.valueOf(new Random().nextInt(999999));
 		user.setSenha(encoder.encode(senha));
 		repository.save(user);

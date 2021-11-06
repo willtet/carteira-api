@@ -2,11 +2,14 @@ package com.wproject.carteiraapi.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.wproject.carteiraapi.dto.ItemCarteiraDto;
 import com.wproject.carteiraapi.model.Transacao;
+import com.wproject.carteiraapi.model.Usuario;
 
 public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
@@ -17,4 +20,6 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 			+ "from Transacao t "
 			+ "group by t.ticker")
 	List<ItemCarteiraDto> gerarRelatorioEmPorcentagem();
+
+	Page<Transacao> findAllByUsuario(Pageable paginacao, Usuario user);
 }

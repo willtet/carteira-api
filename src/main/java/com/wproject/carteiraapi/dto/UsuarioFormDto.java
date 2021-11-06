@@ -1,5 +1,6 @@
 package com.wproject.carteiraapi.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -16,4 +17,7 @@ public class UsuarioFormDto {
 	@NotNull
 	@NotEmpty
 	private String login;
+	
+	@NotNull
+	private Long perfilId;
 }

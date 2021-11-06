@@ -37,8 +37,8 @@ public class TransacaoService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public Page<TransacaoDto> listar(Pageable paginacao) {
-		Page<Transacao> transacoes = repository.findAll(paginacao);
+	public Page<TransacaoDto> listar(Pageable paginacao, Usuario user) {
+		Page<Transacao> transacoes = repository.findAllByUsuario(paginacao, user);
 		
 		return transacoes.map(transacao -> modelMapper.map(transacao, TransacaoDto.class)); 
 	}
