@@ -5,11 +5,15 @@ import java.time.LocalDate;
 
 import com.wproject.carteiraapi.model.TipoTransacao;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransacaoDto {
 
 	private Long id;

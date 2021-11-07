@@ -66,7 +66,7 @@ public class TransacaoService {
 	@Transactional
 	public TransacaoDto atualizar(AtualizarTransacaoFormDto dto, Usuario user) {
 		Transacao t = repository.getById(dto.getId());
-		if(!t.getUsuario().equals(user)) {
+		if(!t.equalUsuario(user)) {
 			lancarAcessoNegado();
 		}
 		t.atualizarInformacoes(
@@ -78,13 +78,11 @@ public class TransacaoService {
 		return modelMapper.map(t, TransacaoDto.class);		
 	}
 
-	private void lancarAcessoNegado() {
-		throw new AccessDeniedException("acesso negado");
-	}
+	
 
 	public void remover(@NotNull Long id, Usuario user) {
 		Transacao t = repository.getById(id);
-		if (!t.getUsuario().equals(user)) {
+		if (!t.equalUsuario(user)) {
 			lancarAcessoNegado();
 		}
 		repository.deleteById(id);
@@ -93,9 +91,13 @@ public class TransacaoService {
 	public TransacaoDetalhadaDto listarPorId(@NotNull Long id, Usuario user) {
 		Transacao t = repository.findById(id).orElseThrow(()->new EntityNotFoundException());
 		
-		if (!t.getUsuario().equals(user)) {
+		if (!t.equalUsuario(user)) {
 			lancarAcessoNegado();
 		}
 		return modelMapper.map(t, TransacaoDetalhadaDto.class);	
+	}
+	
+	private void lancarAcessoNegado() {
+		throw new AccessDeniedException("acesso negado");
 	}
 }

@@ -7,17 +7,21 @@ import java.time.LocalDate;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.wproject.carteiraapi.dto.TransacaoDto;
 import com.wproject.carteiraapi.dto.TransacaoFormDto;
 import com.wproject.carteiraapi.model.TipoTransacao;
+import com.wproject.carteiraapi.model.Transacao;
+import com.wproject.carteiraapi.model.Usuario;
 import com.wproject.carteiraapi.repository.TransacaoRepository;
 import com.wproject.carteiraapi.repository.UsuarioRepository;
 
@@ -30,14 +34,27 @@ class TransacaoServiceTest {
 	@Mock
 	private UsuarioRepository userRepository;
 	
+	@Mock
+	private ModelMapper mapper;
+	
 	@InjectMocks
 	private TransacaoService service;
+	
+	private Usuario logado;
 
+	@BeforeEach
+	public void criarUsuario() {
+		this.logado = new Usuario("Willian", "willtet", "123456");
+	}
+	
 	@Test
 	void deveriaCadastrarTransacao() {
 		TransacaoFormDto form = criarTransacaoForm();
-		
-		TransacaoDto dto = service.cadastrar(form);
+		Mockito.when(userRepository.getById(form.getUsuarioId())).thenReturn(logado);
+		Transacao transacao = new Transacao(form.getTicker(), form.getPreco(), form.getQuantidade(), form.getData(), form.getTipo(), logado);
+		Mockito.when(mapper.map(form,Transacao.class)).thenReturn(transacao);
+		Mockito.when(mapper.map(transacao,TransacaoDto.class)).thenReturn(new TransacaoDto(null, transacao.getTicker(),transacao.getPreco(), transacao.getQuantidade(), transacao.getTipo()) );
+		TransacaoDto dto = service.cadastrar(form, logado);
 		Mockito.verify(repository).save(Mockito.any());
 		
 		
@@ -51,7 +68,7 @@ class TransacaoServiceTest {
 		.when(userRepository.getById(form.getUsuarioId()))
 		.thenThrow(EntityNotFoundException.class);
 				
-		assertThrows(IllegalArgumentException.class, () -> service.cadastrar(form));
+		assertThrows(IllegalArgumentException.class, () -> service.cadastrar(form, logado));
 		
 	}
 
