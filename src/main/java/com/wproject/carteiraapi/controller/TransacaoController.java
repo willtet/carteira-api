@@ -37,6 +37,8 @@ import com.wproject.carteiraapi.model.Usuario;
 import com.wproject.carteiraapi.repository.TransacaoRepository;
 import com.wproject.carteiraapi.service.TransacaoService;
 
+import springfox.documentation.annotations.ApiIgnore;
+
 @RestController
 @RequestMapping("/transacoes")
 public class TransacaoController {
@@ -45,14 +47,16 @@ public class TransacaoController {
 	private TransacaoService service;
 	
 	@GetMapping
-	private Page<TransacaoDto> listar(@PageableDefault(size=10) Pageable paginacao, @AuthenticationPrincipal Usuario user) {
+	private Page<TransacaoDto> listar(
+			@PageableDefault(size=10) Pageable paginacao, 
+			@ApiIgnore @AuthenticationPrincipal Usuario user) {
 		return service.listar(paginacao, user);
 	}
 	
 	@GetMapping("/{id}")
 	private ResponseEntity<TransacaoDetalhadaDto> listarById(
 			@PathVariable @NotNull Long id,
-			@AuthenticationPrincipal Usuario user) {
+			@ApiIgnore @AuthenticationPrincipal Usuario user) {
 		TransacaoDetalhadaDto t = service.listarPorId(id, user);
 		return ResponseEntity.ok(t);
 	}
@@ -60,7 +64,7 @@ public class TransacaoController {
 	@PostMapping
 	private ResponseEntity<TransacaoDto> cadastrar(
 				@RequestBody @Valid TransacaoFormDto dto,
-				@AuthenticationPrincipal Usuario user,
+				@ApiIgnore @AuthenticationPrincipal Usuario user,
 				UriComponentsBuilder builder) {
 		
 		TransacaoDto transacaoDto = service.cadastrar(dto, user);
@@ -74,7 +78,7 @@ public class TransacaoController {
 	@PutMapping
 	private ResponseEntity<TransacaoDto> atualizar(
 			@RequestBody @Valid AtualizarTransacaoFormDto dto,
-			@AuthenticationPrincipal Usuario user){
+			@ApiIgnore @AuthenticationPrincipal Usuario user){
 		TransacaoDto transacaoDto = service.atualizar(dto, user);
 		return ResponseEntity.ok(transacaoDto);
 		
@@ -83,7 +87,7 @@ public class TransacaoController {
 	@DeleteMapping("/{id}")
 	private ResponseEntity<TransacaoDto> deletar(
 			@PathVariable @NotNull Long id,
-			@AuthenticationPrincipal Usuario user){
+			@ApiIgnore @AuthenticationPrincipal Usuario user){
 		service.remover(id, user);
 		return ResponseEntity.noContent().build();
 		

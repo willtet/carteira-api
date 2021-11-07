@@ -1,5 +1,7 @@
 package com.wproject.carteiraapi.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import org.apache.tomcat.jni.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -38,10 +41,24 @@ public class TransacaoService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private CalculadoraDeImpostoService calculadoraService;
+	
 	public Page<TransacaoDto> listar(Pageable paginacao, Usuario user) {
-		Page<Transacao> transacoes = repository.findAllByUsuario(paginacao, user);
+		return  repository.findAllByUsuario(paginacao, user).map((transacao) -> modelMapper.map(transacao, TransacaoDto.class));
 		
-		return transacoes.map(transacao -> modelMapper.map(transacao, TransacaoDto.class)); 
+//		List<TransacaoDto> listaTransacaoDto = new ArrayList<>();
+//		transacoes.forEach((transacao)->{
+//			BigDecimal imposto = calculadoraService.calcular(transacao);
+//			TransacaoDto dto = modelMapper.map(transacao, TransacaoDto.class); 
+//			dto.setImposto(imposto);
+//			listaTransacaoDto.add(dto);
+//		});
+//		
+//		return new PageImpl<TransacaoDto>(
+//				listaTransacaoDto,
+//				transacoes.getPageable(),
+//				transacoes.getTotalElements()); 
 	}
 	
 	@Transactional
@@ -55,6 +72,9 @@ public class TransacaoService {
 			Transacao transacao = modelMapper.map(dto, Transacao.class);
 			transacao.setId(null);
 			transacao.setUsuario(user);
+			
+			BigDecimal imposto = calculadoraService.calcular(transacao);
+			transacao.setImposto(imposto);
 			repository.save(transacao);
 			return modelMapper.map(transacao, TransacaoDto.class);			
 		} catch (EntityNotFoundException e) {

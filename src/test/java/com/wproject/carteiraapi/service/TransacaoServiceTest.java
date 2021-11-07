@@ -37,6 +37,9 @@ class TransacaoServiceTest {
 	@Mock
 	private ModelMapper mapper;
 	
+	@Mock
+	private CalculadoraDeImpostoService calculadoraService;
+	
 	@InjectMocks
 	private TransacaoService service;
 	
@@ -53,7 +56,8 @@ class TransacaoServiceTest {
 		Mockito.when(userRepository.getById(form.getUsuarioId())).thenReturn(logado);
 		Transacao transacao = new Transacao(form.getTicker(), form.getPreco(), form.getQuantidade(), form.getData(), form.getTipo(), logado);
 		Mockito.when(mapper.map(form,Transacao.class)).thenReturn(transacao);
-		Mockito.when(mapper.map(transacao,TransacaoDto.class)).thenReturn(new TransacaoDto(null, transacao.getTicker(),transacao.getPreco(), transacao.getQuantidade(), transacao.getTipo()) );
+		Mockito.when(mapper.map(transacao,TransacaoDto.class)).thenReturn(new TransacaoDto(null, transacao.getTicker(),transacao.getPreco(), transacao.getQuantidade(), transacao.getTipo(), BigDecimal.ZERO) );
+		
 		TransacaoDto dto = service.cadastrar(form, logado);
 		Mockito.verify(repository).save(Mockito.any());
 		
