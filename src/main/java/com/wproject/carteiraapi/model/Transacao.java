@@ -61,6 +61,10 @@ public class Transacao {
 		
 	}
 	
+	public boolean equalUsuario(Usuario user) {
+		return this.usuario.equals(user);
+	}
+	
 	
 	
 }

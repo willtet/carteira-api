@@ -50,17 +50,20 @@ public class TransacaoController {
 	}
 	
 	@GetMapping("/{id}")
-	private ResponseEntity<TransacaoDetalhadaDto> listarById(@PathVariable @NotNull Long id) {
-		TransacaoDetalhadaDto t = service.listarPorId(id);
+	private ResponseEntity<TransacaoDetalhadaDto> listarById(
+			@PathVariable @NotNull Long id,
+			@AuthenticationPrincipal Usuario user) {
+		TransacaoDetalhadaDto t = service.listarPorId(id, user);
 		return ResponseEntity.ok(t);
 	}
 	
 	@PostMapping
 	private ResponseEntity<TransacaoDto> cadastrar(
 				@RequestBody @Valid TransacaoFormDto dto,
+				@AuthenticationPrincipal Usuario user,
 				UriComponentsBuilder builder) {
 		
-		TransacaoDto transacaoDto = service.cadastrar(dto);
+		TransacaoDto transacaoDto = service.cadastrar(dto, user);
 		URI uri = builder
 				.path("/transacoes/{id}")
 				.buildAndExpand(transacaoDto.getId())
@@ -69,15 +72,19 @@ public class TransacaoController {
 	}
 	
 	@PutMapping
-	private ResponseEntity<TransacaoDto> atualizar(@RequestBody @Valid AtualizarTransacaoFormDto dto){
-		TransacaoDto transacaoDto = service.atualizar(dto);
+	private ResponseEntity<TransacaoDto> atualizar(
+			@RequestBody @Valid AtualizarTransacaoFormDto dto,
+			@AuthenticationPrincipal Usuario user){
+		TransacaoDto transacaoDto = service.atualizar(dto, user);
 		return ResponseEntity.ok(transacaoDto);
 		
 	}
 	
 	@DeleteMapping("/{id}")
-	private ResponseEntity<TransacaoDto> deletar(@PathVariable @NotNull Long id){
-		service.remover(id);
+	private ResponseEntity<TransacaoDto> deletar(
+			@PathVariable @NotNull Long id,
+			@AuthenticationPrincipal Usuario user){
+		service.remover(id, user);
 		return ResponseEntity.noContent().build();
 		
 	}

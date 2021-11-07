@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,11 +45,13 @@ public class TransacaoService {
 	}
 	
 	@Transactional
-	public TransacaoDto cadastrar(TransacaoFormDto dto) {
+	public TransacaoDto cadastrar(TransacaoFormDto dto, Usuario logado) {
 		Long idUsuario = dto.getUsuarioId();
 		try {
 			Usuario user = userRepository.getById(idUsuario);
-			
+			if(!user.equals(logado)) {
+				lancarAcessoNegado();
+			}
 			Transacao transacao = modelMapper.map(dto, Transacao.class);
 			transacao.setId(null);
 			transacao.setUsuario(user);
@@ -61,8 +64,11 @@ public class TransacaoService {
 	}
 
 	@Transactional
-	public TransacaoDto atualizar(AtualizarTransacaoFormDto dto) {
+	public TransacaoDto atualizar(AtualizarTransacaoFormDto dto, Usuario user) {
 		Transacao t = repository.getById(dto.getId());
+		if(!t.getUsuario().equals(user)) {
+			lancarAcessoNegado();
+		}
 		t.atualizarInformacoes(
 				dto.getTicker(),
 				dto.getPreco(),
@@ -72,12 +78,24 @@ public class TransacaoService {
 		return modelMapper.map(t, TransacaoDto.class);		
 	}
 
-	public void remover(@NotNull Long id) {
+	private void lancarAcessoNegado() {
+		throw new AccessDeniedException("acesso negado");
+	}
+
+	public void remover(@NotNull Long id, Usuario user) {
+		Transacao t = repository.getById(id);
+		if (!t.getUsuario().equals(user)) {
+			lancarAcessoNegado();
+		}
 		repository.deleteById(id);
 	}
 
-	public TransacaoDetalhadaDto listarPorId(@NotNull Long id) {
+	public TransacaoDetalhadaDto listarPorId(@NotNull Long id, Usuario user) {
 		Transacao t = repository.findById(id).orElseThrow(()->new EntityNotFoundException());
+		
+		if (!t.getUsuario().equals(user)) {
+			lancarAcessoNegado();
+		}
 		return modelMapper.map(t, TransacaoDetalhadaDto.class);	
 	}
 }
