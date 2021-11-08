@@ -46,9 +46,5 @@ public class TokenService {
 							.getBody();
 		return Long.parseLong(claims.getSubject());
 	}
-	
-	public static void main(String[] args) {
-		
-	}
 
 }
