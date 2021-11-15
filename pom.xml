@@ -91,7 +91,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>carteira</finalName>
+		<finalName>carteira-api</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
