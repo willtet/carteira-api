@@ -45,7 +45,7 @@ jobs:
 
       - name: Ir para o diretorio
         run: cd ../
- 
+
       - name: Gerar Build
         run: mvn clean package -DskipTests
 
