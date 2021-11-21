@@ -75,7 +75,8 @@ class UsuarioControllerTest {
 		String json = "{"
 				+ "\"nome\": \"willian\","
 				+ "\"login\": \"email@email.com\","
-				+ "\"perfilId\": 1"
+				+ "\"perfilId\": 1,"
+				+ "\"email\": \"email@email.com\""
 				+ "}";
 		
 		String jsonEsperado = "{"
