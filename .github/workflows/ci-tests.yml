@@ -44,7 +44,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Ir para o diretorio
-        run: cd ../
+        run: mvn -B verify --file folder/pom.xml
 
       - name: Gerar Build
         run: mvn clean package -DskipTests
