@@ -1,11 +1,11 @@
-name: Exeutar Testes Automatizados
+name: Executar Testes Automatizados
 
 on: 
   push:
     branches: [master]
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,3 +25,31 @@ jobs:
 
       - name: Executar Testes
         run: mvn clean test --file pom.xml
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: Configurar Maven
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Gerar Build
+        run: mvn clean package -DskipTests
+
+      - name: Deploy heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "carteira-api-bootcamp"
+          heroku_email: "willian0404@hotmail.co.jp"
+          usedocker: true
