@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.wproject.carteiraapi.dto.UsuarioDto;
 import com.wproject.carteiraapi.dto.UsuarioFormDto;
+import com.wproject.carteiraapi.infra.EnviadorDeEmail;
 import com.wproject.carteiraapi.model.Perfil;
 import com.wproject.carteiraapi.model.Usuario;
 import com.wproject.carteiraapi.repository.PerfilRepository;
@@ -37,6 +38,9 @@ public class UsuarioService {
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
+	@Autowired
+	private EnviadorDeEmail enviadorEmail;
+	
 	public Page<UsuarioDto> ler(Pageable page) {
 		Page<Usuario> usuarios = repository.findAll(page);
 		return usuarios.map(usuario -> modelMapper.map(usuario, UsuarioDto.class));
@@ -52,6 +56,7 @@ public class UsuarioService {
 		String senha = String.valueOf(new Random().nextInt(999999));
 		user.setSenha(encoder.encode(senha));
 		repository.save(user);
+		enviadorEmail.enviarEmail(user.getEmail(), "Não retorne", senha);
 		return modelMapper.map(user, UsuarioDto.class);
 		
 	}

@@ -56,7 +56,7 @@ class CalculadoraDeImpostoServiceTest {
 				LocalDate.now(),
 				BigDecimal.ZERO,
 				tipo,
-				new Usuario(1l, "Will", "will@email.com","123456", null));
+				new Usuario(1l, "Will", "will@email.com","123456", null, null));
 		return t;
 	}
 
