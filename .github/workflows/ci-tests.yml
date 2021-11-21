@@ -43,11 +43,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Ir para o diretorio
-        run: ls -l
-
       - name: Gerar Build
-        run: mvn clean package -DskipTests
+        run: mvn clean -B package --file pom.xml -DskipTests
 
       - name: Deploy heroku
         uses: akhileshns/heroku-deploy@v3.12.12
